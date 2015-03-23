@@ -3,6 +3,7 @@
 // access and display in the device's web browser
 package com.deitel.twittersearches;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -24,9 +25,10 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity
+public class MainActivity extends Activity implements FirstFragment.OnFragmentInteractionListener
 {
    // name of SharedPreferences XML file that stores the saved searches 
    private static final String SEARCHES = "searches";
@@ -58,7 +60,10 @@ public class MainActivity extends Activity
       // create ArrayAdapter and use it to bind tags to the ListView
       adapter = new ArrayAdapter<String>(this, R.layout.list_item, tags);
       // MOVE to ListFragment _ setListAdapter(adapter);
-      
+
+       getFragmentManager().beginTransaction()
+               .add(R.id.FirstFrameLayout, new FirstFragment()).commit();
+
       // register listener to save a new or edited search 
       ImageButton saveButton = 
          (ImageButton) findViewById(R.id.saveButton);
@@ -203,7 +208,7 @@ public class MainActivity extends Activity
                return true;
            } // end method onItemLongClick
        }; // end OnItemLongClickListener declaration
-   }; // end get method
+   } ;// end get method
 
    // NO CHANGES _ allows user to choose an app for sharing a saved search's URL
    private void shareSearch(String tag)
@@ -275,6 +280,20 @@ public class MainActivity extends Activity
    // ADDED to set up the ListFragment
    public ArrayAdapter<String> getAdapter(){return adapter;}
 
+    @Override
+    public void sendURLToFragment2(String url){
+        getFragmentManager().beginTransaction()
+                .replace(R.id.FirstFrameLayout,new SecondFragment().newInstance(url))
+                        .addToBackStack(null).commit();
+    }
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 } // end class MainActivity
 
 
